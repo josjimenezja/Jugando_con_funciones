@@ -1,0 +1,376 @@
+---
+title: "Jugando con Funciones"
+author: "Lina María Moreno <br/> Juan David Valencia<br/> Camilo Andrés Figueroa <br/> Joan Sebastian Jiménez <br/> **Universidad Nacional de Colombia - Sede Medellín <br/> Decisiones bajo incertidumbre (Optimización para aprendizaje de máquina)<br/> Repositorio del codigo: https://github.com/josjimenezja/Jugando_con_funciones <br/><br/>Semestre 2021-01 **"
+output: html_document
+---
+```{r setup, include=FALSE}
+
+library(Ryacas)
+library(plotly)
+library(listviewer)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Planteamiento del problema 
+
+### Matemáticas simbólicas
+
+En R y en Python existen paquetes o librerías que permiten trabajar con funciones matemáticas de forma simbólica.
+
+Un ejemplo en R es la librería <code>Ryacas</code> y un ejemplo en Python es <code>Sympy</code>.
+
+Ejemplo: Consideremos la fucion $f(x) = x^5 + x^2 x \in \mathbb R$ y supongamos que se desea hallar su integral.
+
+Para la derivada se puede usar el siguiente código:
+
+```{r, include=TRUE,echo=FALSE}
+yac_str("D(x)(x^5+x^2)")
+```
+
+Para integral indefinida se puede usar:
+
+```{r, include=TRUE,echo=FALSE}
+yac_str("Integrate(x)(x^5+x^2)")
+```
+
+Estas tres funcions se pueden graficar asi:
+
+```{r, include=TRUE, echo=FALSE, fig.align="center"}
+# par(pty="s") # Controla el efecto de distorsión del gráfico
+curve(x^5+x^2 ,from = -4, to = 4, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(-1000,1000))
+curve(5*x^4+2*x,add = TRUE, col=2, lwd = 2)
+curve(x^6/6+x^3/3,add = TRUE, col=3, lwd = 2)
+grid()
+legend("bottomright",
+       legend=c(expression(f(x)==x^5+x^2),
+                expression(frac(df(x),dx)==5*x^4+2*x),
+                expression(integral(f(x)*dx)==x^6/6+x^3/3)),
+       col= c(1,2,3), lwd = 2, bty = "n")
+```
+
+### Actividades
+
+#### Representacion de funciones univariadas
+
+Grafique las siguientes fucciones:
+
+1. $f(x) = x^3 + x^2, x \in \mathbb R$
+2. $f(x) = e^{-2}, x \in \mathbb R$
+3. $f(x) = xcos(\alpha x), -10 \leq x \leq 10$
+4. $f(x) = |x|, -1 \leq x \leq 1$
+5. $f(x) = 1/|x|, -1 \leq x \leq 1$
+6. $f(x) = x^2, -1 \leq x \leq 1$
+7. $f(x) = \frac{sin(x)}{x}, -1 \leq x \leq 1$
+
+Especifique cuales de estas funciones:
+
++ Son continuas
++ Son convexas
++ Son discontinuas
++ Son suaves
+
+Adicionalmente escoja una de las funciones anteriores, obtenga su primera y segunda derivada y grafique las tres curvas en el mismo plano.
+
+### Representacion de funciones de dos variables
+
+Sea $f(x_1, x_2) = x_1^2 + x_2^2$. Las curvas de nivel de esta funcion se pueden obtener con el siguiente codigo:
+
+```{r, include=TRUE,echo=FALSE,fig.align="center"}
+# Particionamiento del rango de cada variable
+x1 <- seq(-1, 1, length.out = 50)
+x2 <- seq(-1, 1, length.out = 50)
+
+# Dataframe con las combinaciones de ambas variables a evaluar:
+X <- expand.grid(x1,x2)
+
+# Función f(x1,x2)=x1^2+x2^2
+f1 <- function(x1,x2){
+  return(x1^2+x2^2)
+}
+
+# Evaluación de la función:
+z <- f1(X[,1],X[,2])
+
+# Expresión del resultado como matriz para graficar:
+Z <- matrix(z, ncol = 50, nrow = 50)
+```
+
+Curvas de nivel de la función:
+
+```{r, include=TRUE,echo=FALSE, fig.align="center"}
+contour(x1, x2, Z)
+```
+
+**Sugerencia:** probar la función <code> filled.counter()</code>.
+La representación en 3D se puede obtener con la función <code>persp()</code>:
+
+```{r, include=TRUE,echo=FALSE, fig.align="center"}
+persp(x1, x2, Z,d = 2, theta = 15)
+```
+
+**Sugerencia:** probar la librería <code>plotly</code>
+f(x1,x2)=20+∑2i=1x2i−10cos(2πxi
+Escoja una de las siguientes funciones y respresente sus curvas de nivel y su grafica:
+
++ Función de Rosenbrock: $f(x_1, x_2) = 100(x_1-x_2^2)+(1-x_1)^2, 2_i \in [-2.048,2.048]$, $i?1,2$. Alcanza su valor minimo en $x_1 = 1$ y $x_2 = 1$.
++ Función de Rastrigin: $f(x1,x2)= 20 + ∑_{i=1}^2 x_i^2 − 10cos(2\pi x_i) , x_i∈[−5.12,5.12]$, $i=1,2$. Alcanza su valor minimo en $x_1 = 0$ y $x_2 = 0$.
++ Función de Schwefel: $f(x1,x2) = ∑_{i=1}^2 x_i sin(\sqrt{|xi|}), xi∈[−500,500]$, $i=1,2$. Alcanza su valor mínimo en $x1=420.9687$ y $x2=420.9687$.
++ Función de Griewank: $f(x1,x2)=∑_{i=1}^2 \frac{x_i^2}{4000} − ∏_{i=1}^2 cos(\frac{x_i}{\sqrt{i}}) +1, xi∈[−600,600]$, $i=1,2$.
+Alcanza su valor mínimo en $x1=0$ y $x2=0$.
++ Función Goldstein-Price: $f(x_1,x_2)=[1+(x_1+x_2+1)^2(19−14x_1+3x_1^2−14x_2+6x_1x_2+3x_2^2)]$ $×[30+(2x_1−3x_2)^2(18−32x_1+12x_1^2+48x_2−36x_1x_2+27x_2^2)]$, $x_i∈[−2,2]$, $i=1,2$. Alcanza su valor mínimo en $x_1=0$ y $x_2=−1$.
+
++ Funcion de las seis jorobas de cabello *(six-humpcamel back)*: $f(x1,x2)=(4−2.1x_1^2+x_1^{4/3})x_1^2+x_1x_2+(−4+4x_2^2)x_2^2$, $x_1∈[−3,3]$ y $x_2∈[−2,2]$. Alcanza su valor mínimo en $x_1=−0.0898$ y $x_2=0.7126$ y también en $x_1=0.0898$ y $x_2=0.7126$.
+
+## Resultados
+
+### Representacion de funciones univariadas
+
+1. Graficamos la primer funcion a la cual le sacamos la primer y segunda derivada, como se observa.
+
+```{r,include=FALSE}
+
+#Graficamos la primera funcion
+
+#Primera Derivada
+yac_str("D(x)x^3+x^2")
+
+#Segunda Derivada
+yac_str("D(x,2)x^3+x^2") 
+```
+
+```{r,echo=FALSE, fig.align="center"}
+# par(pty="s") # Controla el efecto de distorsion del grafico
+curve(x^3+x^2 ,from = -3, to = 3, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(-20,20))
+curve(3*x^2+2*x,add = TRUE, col=2, lwd = 2)
+curve(6*x+2,add = TRUE, col=3, lwd = 2)
+grid()
+legend("bottomright",
+       legend=c(expression(f(x)==x^3+x^2),
+                expression(frac(df(x),dx)==3*x^2+2*x),
+                expression(frac(df(x)^2,dx^2)==6*x+2)),
+       col= c(1,2,3), lwd = 2, bty = "n")
+```
+
+A partir de la grafica podemos determinar que la funcion es continua y convexa pero no es suave porque solo existen derivadas hasta el orden 3.
+
+2. Graficamos la segunda funcion:
+
+```{r,echo=FALSE, fig.align="center"}
+#Graficamos la segunda funcion
+
+curve(exp(-x),from = -2, to = 5, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(-1,5))
+grid()
+legend("topright",
+       legend=c(expression(f(x)==exp(-x))),
+       col= c(1,2,3), lwd = 2, bty = "n")
+```
+
+Se determina que la funcion es continua, convexa y suave debido a que es infinitamente diferenciable.
+
+3. Graficamos la tercera funcion:
+
+```{r,echo=FALSE, fig.align="center"}
+#Graficamos la tercera funcion:
+
+alfa = 0.5
+
+curve(x*cospi(alfa*x),from = -10, to = 10, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(-12,10))
+grid()
+legend("bottomright",
+       legend=c(expression(f(x)==x*cos(alpha*x))),
+       col= c(1,2,3), lwd = 2, bty = "n")
+
+```
+
+La funcion es continua, convexa y suave debido a que es infinitamente diferenciable por la componente del coseno.
+
+4. Graficamos la cuarta funcion:
+
+```{r,echo=FALSE, fig.align="center"}
+#Graficamos la cuarta funcion:
+
+curve(abs(x),from = -1, to = 1, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(0,1))
+grid()
+legend("bottomright",
+       legend=c(expression(f(x)==abs(x))),
+       col= c(1,2,3), lwd = 2, bty = "n")
+
+```
+
+Se determina que la funcion es continua y convexa, además no es suave debido a que no es diferenciable para todos los R.
+
+5. Graficamos la quinta funcion:
+
+```{r,echo=FALSE, fig.align="center"}
+#Graficamos la quinta funcion:
+
+curve(1/abs(x),from = -1, to = 1, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(1,40))
+grid()
+legend("topright",
+       legend=c(expression(f(x)==frac(1,abs(x)))),
+       col= c(1), lwd = 2, bty = "n")
+
+```
+
+La funcion es discontinua y convexa, ademas no es suave debido a que no es continua en 0.
+
+6. Graficamos la sexta funcion:
+
+```{r,echo=FALSE, fig.align="center"}
+#Graficamos la sexta funcion:
+
+curve(x^2,from = -1, to = 1, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(0,1))
+grid()
+legend("bottomright",
+       legend=c(expression(f(x)==x^2)),
+       col= c(1,2,3), lwd = 2, bty = "n")
+
+```
+
+La funcion es continua y convexa, además no es suave debido a que no es infinitamente diferenciable. 
+
+7. Graficamos la septima funcion:
+
+```{r,echo=FALSE, fig.align="center"}
+#Graficamos la septima funcion:
+
+curve(sinpi(x)/x,from = -1, to = 1, las = 1, 
+      xlab = expression(x), 
+      ylab = "",
+      lwd= 2,ylim=c(0,4))
+grid()
+legend("topright",
+       legend=c(expression(f(x)==frac(sin(x),x))),
+       col= c(1,2,3), lwd = 2, bty = "n")
+
+```
+
+La funcion es discontinua y no es suave por lo mismo.
+
+### Representacion de funciones de dos variables
+
+1. Se utilizara para este ejercicio la funcion de Rosenbrock descrita al comienzo del documento.
+
+A continuacion se puede apreciar el grafico de curvas de nivel de la funcion y el grafico de calor de la misma.
+
+```{r,echo=FALSE, fig.align="center"}
+#Funcion de Rosenbrock:
+
+#Generacion de los puntos para cada variable
+x1 <- seq(-2.048, 2.048, length.out = 80)
+x2 <- seq(-2.048, 2.048, length.out = 80)
+
+# Dataframe con las combinaciones de ambas variables a evaluar:
+X <- expand.grid(x1,x2)
+
+# Funcion f(x1,x2)
+f1 <- function(x1,x2){
+  return((100*(x2-(x1^2))^2)+((1-x1)^2))
+}
+
+# Evaluacion de la funcion:
+z <- f1(X[,1],X[,2])
+
+# Expresion del resultado como matriz para graficar:
+Z <- matrix(z, ncol = 80, nrow = 80)
+
+#Curvas de nivel de la funcion:
+contour(x1, x2, Z)
+filled.contour(x1, x2, Z)
+```
+
+Utilizando la funcion <code>persp()</code> podemos observar el grafico de la funcion en tres dimensiones.
+
+```{r,echo=FALSE, fig.align="center"}
+#La representacion 3D se puede obtener con la funcion persp()
+persp(x1, x2, Z,d = 2, theta = 25)
+```
+
+
+Adicionalmente se obtiene un grafico interactivo en tres dimensiones de la funcion.
+
+```{r,echo=FALSE, fig.align="center"}
+fig <- plot_ly(z = as.matrix(Z), type = "surface")
+fig <- fig %>% add_surface()
+
+fig
+```
+
+2. Por fines practicos se desarrollo tambien el ejercicio con la funcion de Schwefel.
+
+A continuacion se puede apreciar el grafico de curvas de nivel y el grafico de calor
+
+```{r,echo=FALSE, fig.align="center"}
+#Funcion de Schwefel: 
+
+# Generacion de los puntos para cada variable
+x1 <- seq(-500, 500, length.out = 40)
+x2 <- seq(-500, 500, length.out = 40)
+
+# Dataframe con las combinaciones de ambas variables a evaluar:
+X <- expand.grid(x1,x2)
+
+# Funcion f(x1,x2)
+f1 <- function(x1,x2){
+  return((x1*sinpi(sqrt(abs(x1)))) + (x2*sinpi(sqrt(abs(x2)))) )
+}
+
+# Evaluacion de la funcion:
+z <- f1(X[,1],X[,2])
+
+# Expresion del resultado como matriz para graficar:
+Z <- matrix(z, ncol = 40, nrow = 40)
+
+#Curvas de nivel de la funcion:
+contour(x1, x2, Z)
+filled.contour(x1, x2, Z)
+```
+
+Utilizando la funcion <code>persp()</code> podemos observar el grafico de la funcion en tres dimensiones
+
+```{r,echo=FALSE, fig.align="center"}
+#La representacion 3D se puede obtener con la funcion persp()
+persp(x1, x2, Z,d = 2, theta = 25)
+
+```
+
+Adicionalmente se obtiene un grafico interactivo en tres dimensiones de la funcion.
+
+```{r,echo=FALSE, fig.align="center"}
+fig <- plot_ly(z = as.matrix(Z), type = "surface")
+fig <- fig %>% add_surface()
+
+fig
+```
+
+## Conclusión
+
+Graficar funciones ayuda en gran manera a visualizar el comportamiento de los datos, a interpretar y analizar. Por ejemplo, la continuidad de las variables, su forma, visualizar posibles máximos y mínimos, y corroborar si los resultados son coherentes con la gráfica.
+
+## Bibliografia
+
++ https://www.sfu.ca/~ssurjano/schwef.html
++ https://en.wikipedia.org/wiki/Smoothness
++ https://plotly.com/r/3d-surface-plots/
