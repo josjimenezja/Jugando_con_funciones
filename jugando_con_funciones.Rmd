@@ -118,7 +118,7 @@ Escoja una de las siguientes funciones y respresente sus curvas de nivel y su gr
 
 + Función de Rosenbrock: $f(x_1, x_2) = 100(x_1-x_2^2)+(1-x_1)^2, 2_i \in [-2.048,2.048]$, $i?1,2$. Alcanza su valor minimo en $x_1 = 1$ y $x_2 = 1$.
 + Función de Rastrigin: $f(x1,x2)= 20 + ∑_{i=1}^2 x_i^2 − 10cos(2\pi x_i) , x_i∈[−5.12,5.12]$, $i=1,2$. Alcanza su valor minimo en $x_1 = 0$ y $x_2 = 0$.
-+ Función de Schwefel: $f(x1,x2) = ∑_{i=1}^2 x_i sin(\sqrt{|xi|}), xi∈[−500,500]$, $i=1,2$. Alcanza su valor mínimo en $x1=420.9687$ y $x2=420.9687$.
++ Función de Schwefel: $f(x1,x2) = -∑_{i=1}^2 x_i sin(\sqrt{|xi|}), xi∈[−500,500]$, $i=1,2$. Alcanza su valor mínimo en $x1=420.9687$ y $x2=420.9687$.
 + Función de Griewank: $f(x1,x2)=∑_{i=1}^2 \frac{x_i^2}{4000} − ∏_{i=1}^2 cos(\frac{x_i}{\sqrt{i}}) +1, xi∈[−600,600]$, $i=1,2$.
 Alcanza su valor mínimo en $x1=0$ y $x2=0$.
 + Función Goldstein-Price: $f(x_1,x_2)=[1+(x_1+x_2+1)^2(19−14x_1+3x_1^2−14x_2+6x_1x_2+3x_2^2)]$ $×[30+(2x_1−3x_2)^2(18−32x_1+12x_1^2+48x_2−36x_1x_2+27x_2^2)]$, $x_i∈[−2,2]$, $i=1,2$. Alcanza su valor mínimo en $x_1=0$ y $x_2=−1$.
@@ -318,6 +318,12 @@ fig <- fig %>% add_surface()
 fig
 ```
 
+Observamos el mínimo de la función efectivamente en los puntos $x1=1$ y $x2=1$ con $z$ igual a:
+```{r,echo=FALSE, fig.align="center"}
+f1(1,1)
+```
+
+
 2. Por fines practicos se desarrollo tambien el ejercicio con la funcion de Schwefel.
 
 A continuacion se puede apreciar el grafico de curvas de nivel y el grafico de calor
@@ -334,7 +340,7 @@ X <- expand.grid(x1,x2)
 
 # Funcion f(x1,x2)
 f1 <- function(x1,x2){
-  return((x1*sinpi(sqrt(abs(x1)))) + (x2*sinpi(sqrt(abs(x2)))) )
+  return(-((x1*sin(sqrt(abs(x1)))) + (x2*sin(sqrt(abs(x2)))) ))
 }
 
 # Evaluacion de la funcion:
@@ -364,6 +370,10 @@ fig <- fig %>% add_surface()
 
 fig
 ```
+Observamos el mínimo de la función efectivamente en los puntos $x1=420.9687$ y $x2=420.9687$ con $z$ igual a:
+```{r,echo=FALSE, fig.align="center"}
+f1(420.9687,420.9687)
+```
 
 ## Conclusión
 
@@ -374,3 +384,4 @@ Graficar funciones ayuda en gran manera a visualizar el comportamiento de los da
 + https://www.sfu.ca/~ssurjano/schwef.html
 + https://en.wikipedia.org/wiki/Smoothness
 + https://plotly.com/r/3d-surface-plots/
++ https://docs.microsoft.com/es-es/archive/msdn-magazine/2012/june/test-run-evolutionary-optimization-algorithms
